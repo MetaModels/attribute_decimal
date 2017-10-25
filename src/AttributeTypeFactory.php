@@ -36,7 +36,7 @@ class AttributeTypeFactory extends AbstractAttributeTypeFactory
         parent::__construct();
 
         $this->typeName  = 'decimal';
-        $this->typeIcon  = 'system/modules/metamodelsattribute_decimal/html/decimal.png';
+        $this->typeIcon  = 'bundles/metamodelsattributedecimal/decimal.png';
         $this->typeClass = 'MetaModels\Attribute\Decimal\Decimal';
     }
 }
