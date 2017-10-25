@@ -12,7 +12,7 @@
 		>
 	<testsuites>
 		<testsuite name="MetaModels attribute decimal tests">
-			<directory>./tests/Test/</directory>
+			<directory>./tests/</directory>
 		</testsuite>
 	</testsuites>
 

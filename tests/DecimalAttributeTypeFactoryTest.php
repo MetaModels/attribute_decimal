@@ -22,12 +22,12 @@ namespace MetaModels\Test\Attribute\Decimal;
 use MetaModels\Attribute\IAttributeTypeFactory;
 use MetaModels\Attribute\Decimal\AttributeTypeFactory;
 use MetaModels\IMetaModel;
-use MetaModels\Test\Attribute\AttributeTypeFactoryTest;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test the attribute factory.
  */
-class DecimalAttributeTypeFactoryTest extends AttributeTypeFactoryTest
+class DecimalAttributeTypeFactoryTest extends TestCase
 {
     /**
      * Mock a MetaModel.
@@ -42,11 +42,7 @@ class DecimalAttributeTypeFactoryTest extends AttributeTypeFactoryTest
      */
     protected function mockMetaModel($tableName, $language, $fallbackLanguage)
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array(),
-            array(array())
-        );
+        $metaModel = $this->getMockBuilder('MetaModels\IMetaModel')->getMock();
 
         $metaModel
             ->expects($this->any())
