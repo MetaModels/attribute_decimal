@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2015 The MetaModels team.
+ * (c) 2012-2017 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,26 +14,28 @@
  * @subpackage AttributeDecimal
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @copyright  2012-2017 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
 namespace MetaModels\Attribute\Decimal;
 
-use MetaModels\Attribute\AbstractAttributeTypeFactory;
+use Doctrine\DBAL\Connection;
+use MetaModels\Attribute\AbstractSimpleAttributeTypeFactory;
+use MetaModels\Helper\TableManipulator;
 
 /**
  * Attribute type factory for decimal attributes.
  */
-class AttributeTypeFactory extends AbstractAttributeTypeFactory
+class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
 {
     /**
      * {@inheritDoc}
      */
-    public function __construct()
+    public function __construct(Connection $connection, TableManipulator $tableManipulator)
     {
-        parent::__construct();
+        parent::__construct($connection, $tableManipulator);
 
         $this->typeName  = 'decimal';
         $this->typeIcon  = 'bundles/metamodelsattributedecimal/decimal.png';
