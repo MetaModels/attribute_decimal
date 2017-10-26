@@ -20,13 +20,17 @@
 namespace MetaModels\Test\Attribute\Decimal;
 
 use Contao\Database;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Query\QueryBuilder;
 use MetaModels\Attribute\Decimal\Decimal;
-use MetaModels\MetaModelsServiceContainer;
+use MetaModels\Helper\TableManipulator;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Decimal.
  */
-class DecimalTest extends \PHPUnit_Framework_TestCase
+class DecimalTest extends TestCase
 {
     /**
      * Mock the Contao database.
@@ -120,17 +124,11 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
      *
      * @param string   $fallbackLanguage The fallback language.
      *
-     * @param Database $database         The database to use.
-     *
      * @return \MetaModels\IMetaModel
      */
-    protected function mockMetaModel($language, $fallbackLanguage, $database)
+    protected function mockMetaModel($language, $fallbackLanguage)
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array(),
-            array(array())
-        );
+        $metaModel = $this->getMockBuilder('MetaModels\IMetaModel')->getMock();
 
         $metaModel
             ->expects($this->any())
@@ -147,14 +145,75 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
             ->method('getFallbackLanguage')
             ->will($this->returnValue($fallbackLanguage));
 
-        $serviceContainer = new MetaModelsServiceContainer();
-        $serviceContainer->setDatabase($database);
-
-        $metaModel
-            ->method('getServiceContainer')
-            ->willReturn($serviceContainer);
-
         return $metaModel;
+    }
+
+    /**
+     * Mock the Contao database.
+     *
+     * @param string|null   expectedQuery The query to expect.
+     *
+     * @param callable|null $callback     Callback which gets mocked statement passed.
+     *
+     * @return Connection|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockConnection(callable $callback = null, $expectedQuery = null, $queryMethod = 'prepare')
+    {
+        $mockDb = $this
+            ->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $statement = $this
+            ->getMockBuilder(Statement::class)
+            ->getMock();
+
+        $mockDb->method('prepare')->willReturn($statement);
+        $mockDb->method('query')->willReturn($statement);
+
+        if ($callback) {
+            call_user_func($callback, $statement);
+        }
+
+        if (!$expectedQuery || $expectedQuery === 'prepare') {
+            $mockDb->expects($this->never())->method('query');
+        }
+
+        if (!$expectedQuery || $expectedQuery === 'query') {
+            $mockDb->expects($this->never())->method('prepare');
+        }
+
+        if (!$expectedQuery) {
+            return $mockDb;
+        }
+
+        $mockDb
+            ->expects($this->once())
+            ->method($queryMethod)
+            ->with($expectedQuery);
+
+        if ($queryMethod === 'prepare') {
+            $statement
+                ->expects($this->once())
+                ->method('execute')
+                ->willReturn(true);
+        }
+
+        return $mockDb;
+    }
+
+    /**
+     * Mock the table manipulator.
+     *
+     * @param Connection $connection The database connection mock.
+     *
+     * @return TableManipulator|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockTableManipulator(Connection $connection)
+    {
+        return $this->getMockBuilder(TableManipulator::class)
+            ->setConstructorArgs([$connection, []])
+            ->getMock();
     }
 
     /**
@@ -164,7 +223,10 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
      */
     public function testInstantiation()
     {
-        $text = new Decimal($this->mockMetaModel('en', 'en', $this->mockDatabase()));
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
+
+        $text = new Decimal($this->mockMetaModel('en', 'en'), [], $connection, $manipulator);
         $this->assertInstanceOf('MetaModels\Attribute\Decimal\Decimal', $text);
     }
 
@@ -194,16 +256,35 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
      */
     public function testSearchFor($value)
     {
+        $connection   = $this->mockConnection();
+        $manipulator  = $this->mockTableManipulator($connection);
+        $queryBuilder = new QueryBuilder($connection);
+
+        $connection
+            ->expects($this->once())
+            ->method('createQueryBuilder')
+            ->willReturn($queryBuilder);
+
+        $statement = $this->getMockBuilder(Statement::class)->getMock();
+        $statement
+            ->expects($this->once())
+            ->method('fetchAll')
+            ->with(\PDO::FETCH_COLUMN, 'id')
+            ->willReturn(array(1,2));
+
+        $connection
+            ->expects($this->once())
+            ->method('executeQuery')
+            ->willReturn($statement);
+
         $decimal = new Decimal(
             $this->mockMetaModel(
                 'en',
-                'en',
-                $this->mockDatabase(
-                    'SELECT id FROM mm_unittest WHERE test=?',
-                    array(array('id' => 1), array('id' => 2))
-                )
+                'en'
             ),
-            array('colname' => 'test')
+            array('colname' => 'test'),
+            $connection,
+            $manipulator
         );
 
         $this->assertEquals(array(1, 2), $decimal->searchFor($value));
@@ -216,16 +297,33 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
      */
     public function testSearchForWithWildcard()
     {
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
+
+        $queryBuilder = new QueryBuilder($connection);
+
+        $connection
+            ->expects($this->once())
+            ->method('createQueryBuilder')
+            ->willReturn($queryBuilder);
+
+        $statement = $this->getMockBuilder(Statement::class)->getMock();
+        $statement
+            ->expects($this->once())
+            ->method('fetchAll')
+            ->with(\PDO::FETCH_COLUMN, 'id')
+            ->willReturn(array(1,2));
+
+        $connection
+            ->expects($this->once())
+            ->method('executeQuery')
+            ->willReturn($statement);
+
         $decimal = new Decimal(
-            $this->mockMetaModel(
-                'en',
-                'en',
-                $this->mockDatabase(
-                    'SELECT id FROM mm_unittest WHERE test LIKE ?',
-                    array(array('id' => 1), array('id' => 2))
-                )
-            ),
-            array('colname' => 'test')
+            $this->mockMetaModel('en', 'en'),
+            array('colname' => 'test'),
+            $connection,
+            $manipulator
         );
 
         $this->assertEquals(array(1, 2), $decimal->searchFor('10*'));
@@ -238,13 +336,17 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
      */
     public function testSearchForWithNonNumeric()
     {
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
+
         $decimal = new Decimal(
             $this->mockMetaModel(
                 'en',
-                'en',
-                $this->mockDatabase()
+                'en'
             ),
-            array('colname' => 'test')
+            array('colname' => 'test'),
+            $connection,
+            $manipulator
         );
 
         $this->assertEquals(array(), $decimal->searchFor('abc'));

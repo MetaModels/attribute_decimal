@@ -19,8 +19,10 @@
 
 namespace MetaModels\Test\Attribute\Decimal;
 
+use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttributeTypeFactory;
 use MetaModels\Attribute\Decimal\AttributeTypeFactory;
+use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use PHPUnit\Framework\TestCase;
 
@@ -63,13 +65,42 @@ class DecimalAttributeTypeFactoryTest extends TestCase
     }
 
     /**
+     * Mock the database connection.
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|Connection
+     */
+    private function mockConnection()
+    {
+        return $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * Mock the table manipulator.
+     *
+     * @param Connection $connection The database connection mock.
+     *
+     * @return TableManipulator|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockTableManipulator(Connection $connection)
+    {
+        return $this->getMockBuilder(TableManipulator::class)
+            ->setConstructorArgs([$connection, []])
+            ->getMock();
+    }
+
+    /**
      * Override the method to run the tests on the attribute factories to be tested.
      *
      * @return IAttributeTypeFactory[]
      */
     protected function getAttributeFactories()
     {
-        return array(new AttributeTypeFactory());
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
+
+        return array(new AttributeTypeFactory($connection, $manipulator));
     }
 
     /**
@@ -77,9 +108,12 @@ class DecimalAttributeTypeFactoryTest extends TestCase
      *
      * @return void
      */
-    public function testCreateSelect()
+    public function testCreateAttribute()
     {
-        $factory   = new AttributeTypeFactory();
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
+
+        $factory   = new AttributeTypeFactory($connection, $manipulator);
         $values    = array(
         );
         $attribute = $factory->createInstance(
