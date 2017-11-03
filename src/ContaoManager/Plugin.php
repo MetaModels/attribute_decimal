@@ -18,12 +18,12 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Decimal\ContaoManager;
+namespace MetaModels\AttributeDecimalBundle\ContaoManager;
 
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use MetaModels\Attribute\Decimal\MetaModelsAttributeDecimalBundle;
+use MetaModels\AttributeDecimalBundle\MetaModelsAttributeDecimalBundle;
 use MetaModels\CoreBundle\MetaModelsCoreBundle;
 
 /**

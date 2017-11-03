@@ -46,16 +46,19 @@
   },
   "autoload": {
     "psr-4": {
-      "MetaModels\\Attribute\\Decimal\\": "src"
-    }
+      "MetaModels\\AttributeDecimalBundle\\": "src"
+    },
+    "files": [
+      "src/deprecated-autoload.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
-      "MetaModels\\Test\\Attribute\\Decimal\\": "tests"
+      "MetaModels\\AttributeDecimalBundle\\Test\\": "tests"
     }
   },
   "extra": {
-    "contao-manager-plugin": "MetaModels\\Attribute\\Decimal\\ContaoManager\\Plugin",
+    "contao-manager-plugin": "MetaModels\\AttributeDecimalBundle\\ContaoManager\\Plugin",
     "contao": {
       "symlinks": {
         "contao": "system/modules/metamodelsattribute_decimal"

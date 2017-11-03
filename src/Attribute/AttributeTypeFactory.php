@@ -19,7 +19,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Decimal;
+namespace MetaModels\AttributeDecimalBundle\Attribute;
 
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\AbstractSimpleAttributeTypeFactory;
@@ -39,6 +39,6 @@ class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
 
         $this->typeName  = 'decimal';
         $this->typeIcon  = 'bundles/metamodelsattributedecimal/decimal.png';
-        $this->typeClass = 'MetaModels\Attribute\Decimal\Decimal';
+        $this->typeClass = Decimal::class;
     }
 }

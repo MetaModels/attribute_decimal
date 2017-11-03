@@ -18,10 +18,10 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Decimal\DependencyInjection;
+namespace MetaModels\AttributeDecimalBundle\Test\DependencyInjection;
 
-use MetaModels\Attribute\Decimal\AttributeTypeFactory;
-use MetaModels\Attribute\Decimal\DependencyInjection\MetaModelsAttributeDecimalExtension;
+use MetaModels\AttributeDecimalBundle\Attribute\AttributeTypeFactory;
+use MetaModels\AttributeDecimalBundle\DependencyInjection\MetaModelsAttributeDecimalExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;

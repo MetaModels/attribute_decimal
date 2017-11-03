@@ -1,6 +1,6 @@
 services:
     metamodels.attribute_decimal.factory:
-        class: MetaModels\Attribute\Decimal\AttributeTypeFactory
+        class: MetaModels\AttributeDecimalBundle\Attribute\AttributeTypeFactory
         arguments:
             - '@database_connection'
             - '@metamodels.table_manipulator'

@@ -17,11 +17,12 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Decimal;
+namespace MetaModels\AttributeDecimalBundle\Test\Attribute;
 
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttributeTypeFactory;
-use MetaModels\Attribute\Decimal\AttributeTypeFactory;
+use MetaModels\AttributeDecimalBundle\Attribute\AttributeTypeFactory;
+use MetaModels\AttributeDecimalBundle\Attribute\Decimal;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use PHPUnit\Framework\TestCase;
@@ -121,7 +122,7 @@ class DecimalAttributeTypeFactoryTest extends TestCase
             $this->mockMetaModel('mm_test', 'de', 'en')
         );
 
-        $this->assertInstanceOf('MetaModels\Attribute\Decimal\Decimal', $attribute);
+        $this->assertInstanceOf(Decimal::class, $attribute);
 
         foreach ($values as $key => $value) {
             $this->assertEquals($value, $attribute->get($key), $key);

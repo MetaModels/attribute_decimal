@@ -18,7 +18,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Decimal;
+namespace MetaModels\AttributeDecimalBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

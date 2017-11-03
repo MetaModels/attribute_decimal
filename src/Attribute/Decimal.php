@@ -22,7 +22,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Decimal;
+namespace MetaModels\AttributeDecimalBundle\Attribute;
 
 use MetaModels\Attribute\BaseSimple;
 
