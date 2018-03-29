@@ -23,6 +23,9 @@ use Contao\Database;
 use MetaModels\Attribute\Decimal\Decimal;
 use MetaModels\MetaModelsServiceContainer;
 use PHPUnit\Framework\TestCase;
+use Contao\Database\Statement;
+use Contao\Database\Result;
+use MetaModels\MetaModel;
 
 /**
  * Unit tests to test class Decimal.
@@ -41,14 +44,14 @@ class DecimalTest extends TestCase
     private function mockDatabase($expectedQuery = '', $result = null)
     {
         $mockDb = $this
-            ->getMockBuilder('Contao\Database')
+            ->getMockBuilder(Database::class)
             ->disableOriginalConstructor()
             ->setMethods(['__destruct'])
             ->getMockForAbstractClass();
 
         $mockDb->method('createStatement')->willReturn(
             $statement = $this
-                ->getMockBuilder('Contao\Database\Statement')
+                ->getMockBuilder(Statement::class)
                 ->disableOriginalConstructor()
                 ->setMethods(['debugQuery', 'createResult'])
                 ->getMockForAbstractClass()
@@ -80,7 +83,7 @@ class DecimalTest extends TestCase
                 $resultData = (array) $resultData;
 
                 $resultSet = $this
-                    ->getMockBuilder('Contao\Database\Result')
+                    ->getMockBuilder(Result::class)
                     ->disableOriginalConstructor()
                     ->getMockForAbstractClass();
 
@@ -127,7 +130,7 @@ class DecimalTest extends TestCase
      */
     protected function mockMetaModel($language, $fallbackLanguage, $database)
     {
-        $metaModel = $this->getMockBuilder('MetaModels\MetaModel')->setMethods([])->setConstructorArgs([[]])->getMock();
+        $metaModel = $this->getMockBuilder(MetaModel::class)->setMethods([])->setConstructorArgs([[]])->getMock();
 
         $metaModel
             ->expects($this->any())
@@ -162,7 +165,7 @@ class DecimalTest extends TestCase
     public function testInstantiation()
     {
         $text = new Decimal($this->mockMetaModel('en', 'en', $this->mockDatabase()));
-        $this->assertInstanceOf('MetaModels\Attribute\Decimal\Decimal', $text);
+        $this->assertInstanceOf(Decimal::class, $text);
     }
 
     /**

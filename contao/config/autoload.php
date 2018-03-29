@@ -21,7 +21,7 @@
 /**
  * Register the templates
  */
-TemplateLoader::addFiles(
+\Contao\TemplateLoader::addFiles(
     [
         'mm_attr_decimal' => 'system/modules/metamodelsattribute_decimal/templates',
     ]

@@ -23,6 +23,8 @@ use MetaModels\Attribute\IAttributeTypeFactory;
 use MetaModels\Attribute\Decimal\AttributeTypeFactory;
 use MetaModels\IMetaModel;
 use MetaModels\Test\Attribute\AttributeTypeFactoryTest;
+use MetaModels\MetaModel;
+use MetaModels\Attribute\Decimal\Decimal;
 
 /**
  * Test the attribute factory.
@@ -42,7 +44,7 @@ class DecimalAttributeTypeFactoryTest extends AttributeTypeFactoryTest
      */
     protected function mockMetaModel($tableName, $language, $fallbackLanguage)
     {
-        $metaModel = $this->getMockBuilder('MetaModels\MetaModel')->setMethods([])->setConstructorArgs([[]])->getMock();
+        $metaModel = $this->getMockBuilder(MetaModel::class)->setMethods([])->setConstructorArgs([[]])->getMock();
 
         $metaModel
             ->expects($this->any())
@@ -86,7 +88,7 @@ class DecimalAttributeTypeFactoryTest extends AttributeTypeFactoryTest
             $this->mockMetaModel('mm_test', 'de', 'en')
         );
 
-        $this->assertInstanceOf('MetaModels\Attribute\Decimal\Decimal', $attribute);
+        $this->assertInstanceOf(Decimal::class, $attribute);
 
         foreach ($values as $key => $value) {
             $this->assertEquals($value, $attribute->get($key), $key);
