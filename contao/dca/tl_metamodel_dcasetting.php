@@ -15,24 +15,21 @@
  * @author      Carolina M. Koehn <office@kikmedia.de>
  * @author      Cliff Parnitzky <github@cliff-parnitzky.de>
  * @author      Stefan Heimes <stefan_heimes@hotmail.com>
+ * @author      Sven Baumann <baumann.sv@gmail.com>
  * @copyright   The MetaModels team.
  * @license     LGPL.
  * @filesource
  */
 
-$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['decimal'] = array
-(
-    'presentation' => array
-    (
+$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['decimal'] = [
+    'presentation' => [
         'tl_class',
-    ),
-    'functions'  => array
-    (
+    ],
+    'functions'    => [
         'mandatory',
-    ),
-    'overview' => array
-    (
+    ],
+    'overview'     => [
         'filterable',
         'searchable',
-    )
-);
+    ]
+];

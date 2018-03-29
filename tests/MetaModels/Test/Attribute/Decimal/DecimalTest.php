@@ -11,7 +11,8 @@
  * @package    MetaModels
  * @subpackage Tests
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -41,14 +42,14 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
         $mockDb = $this
             ->getMockBuilder('Contao\Database')
             ->disableOriginalConstructor()
-            ->setMethods(array('__destruct'))
+            ->setMethods(['__destruct'])
             ->getMockForAbstractClass();
 
         $mockDb->method('createStatement')->willReturn(
             $statement = $this
                 ->getMockBuilder('Contao\Database\Statement')
                 ->disableOriginalConstructor()
-                ->setMethods(array('debugQuery', 'createResult'))
+                ->setMethods(['debugQuery', 'createResult'])
                 ->getMockForAbstractClass()
         );
 
@@ -65,7 +66,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
             ->willReturnArgument(0);
 
         if ($result === null) {
-            $result = array('ignored');
+            $result = ['ignored'];
         } else {
             $result = (object) $result;
         }
@@ -174,12 +175,12 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
      */
     public function searchForProvider()
     {
-        return array(
-            array('10'),
-            array('10.0'),
-            array(10),
-            array(10.5),
-        );
+        return [
+            ['10'],
+            ['10.0'],
+            [10],
+            [10.5],
+        ];
     }
 
     /**
@@ -199,13 +200,13 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
                 'en',
                 $this->mockDatabase(
                     'SELECT id FROM mm_unittest WHERE test=?',
-                    array(array('id' => 1), array('id' => 2))
+                    [['id' => 1], ['id' => 2]]
                 )
             ),
-            array('colname' => 'test')
+            ['colname' => 'test']
         );
 
-        $this->assertEquals(array(1, 2), $decimal->searchFor($value));
+        $this->assertEquals([1, 2], $decimal->searchFor($value));
     }
 
     /**
@@ -221,13 +222,13 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
                 'en',
                 $this->mockDatabase(
                     'SELECT id FROM mm_unittest WHERE test LIKE ?',
-                    array(array('id' => 1), array('id' => 2))
+                    [['id' => 1], ['id' => 2]]
                 )
             ),
-            array('colname' => 'test')
+            ['colname' => 'test']
         );
 
-        $this->assertEquals(array(1, 2), $decimal->searchFor('10*'));
+        $this->assertEquals([1, 2], $decimal->searchFor('10*'));
     }
 
     /**
@@ -243,9 +244,9 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
                 'en',
                 $this->mockDatabase()
             ),
-            array('colname' => 'test')
+            ['colname' => 'test']
         );
 
-        $this->assertEquals(array(), $decimal->searchFor('abc'));
+        $this->assertEquals([], $decimal->searchFor('abc'));
     }
 }

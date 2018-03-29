@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2015 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,7 +16,8 @@
  * @author     Andreas Isaak <andy.jared@googlemail.com>
  * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -45,19 +46,19 @@ class Decimal extends BaseSimple
     {
         return array_merge(
             parent::getAttributeSettingNames(),
-            array(
+            [
                 'isunique',
                 'mandatory',
                 'filterable',
                 'searchable',
-            )
+            ]
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getFieldDefinition($arrOverrides = array())
+    public function getFieldDefinition($arrOverrides = [])
     {
         $arrFieldDef = parent::getFieldDefinition($arrOverrides);
 
@@ -110,7 +111,7 @@ class Decimal extends BaseSimple
 
         // Not with wildcard but also not numeric, impossible to get decimal results.
         if (!is_numeric($strPattern)) {
-            return array();
+            return [];
         }
 
         // Do a simple search on given column.
@@ -126,7 +127,7 @@ class Decimal extends BaseSimple
 
         return $query->fetchEach('id');
     }
-    
+
     /**
      * Filter all values by specified operation.
      *

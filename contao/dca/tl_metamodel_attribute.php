@@ -13,9 +13,10 @@
  * @author      Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author      Andreas Isaak <andy.jared@googlemail.com>
  * @author      Cliff Parnitzky <github@cliff-parnitzky.de>
+ * @author      Sven Baumann <baumann.sv@gmail.com>
  * @copyright   The MetaModels team.
  * @license     LGPL.
  * @filesource
  */
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['decimal extends _simpleattribute_'] = array();
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['decimal extends _simpleattribute_'] = [];

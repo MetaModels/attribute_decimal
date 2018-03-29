@@ -11,7 +11,8 @@
  * @package    MetaModels
  * @subpackage Tests
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -72,7 +73,7 @@ class DecimalAttributeTypeFactoryTest extends AttributeTypeFactoryTest
      */
     protected function getAttributeFactories()
     {
-        return array(new AttributeTypeFactory());
+        return [new AttributeTypeFactory()];
     }
 
     /**
@@ -83,8 +84,7 @@ class DecimalAttributeTypeFactoryTest extends AttributeTypeFactoryTest
     public function testCreateSelect()
     {
         $factory   = new AttributeTypeFactory();
-        $values    = array(
-        );
+        $values    = [];
         $attribute = $factory->createInstance(
             $values,
             $this->mockMetaModel('mm_test', 'de', 'en')
