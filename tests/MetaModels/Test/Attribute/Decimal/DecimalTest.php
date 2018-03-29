@@ -22,11 +22,12 @@ namespace MetaModels\Test\Attribute\Decimal;
 use Contao\Database;
 use MetaModels\Attribute\Decimal\Decimal;
 use MetaModels\MetaModelsServiceContainer;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Decimal.
  */
-class DecimalTest extends \PHPUnit_Framework_TestCase
+class DecimalTest extends TestCase
 {
     /**
      * Mock the Contao database.
@@ -126,11 +127,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
      */
     protected function mockMetaModel($language, $fallbackLanguage, $database)
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array(),
-            array(array())
-        );
+        $metaModel = $this->getMockBuilder('MetaModels\MetaModel')->setMethods([])->setConstructorArgs([[]])->getMock();
 
         $metaModel
             ->expects($this->any())
