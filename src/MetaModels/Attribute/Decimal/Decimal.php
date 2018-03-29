@@ -144,7 +144,7 @@ class Decimal extends BaseSimple
             $this->getMetaModel()->getTableName(),
             $this->getColName(),
             $strOperation,
-            floatval($varValue)
+            (float) $varValue
         );
 
         $objIds = $this->getMetaModel()->getServiceContainer()->getDatabase()->execute($strSql);
