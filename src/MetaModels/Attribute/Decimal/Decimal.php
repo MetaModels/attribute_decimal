@@ -44,7 +44,7 @@ class Decimal extends BaseSimple
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(
+        return \array_merge(
             parent::getAttributeSettingNames(),
             [
                 'isunique',
@@ -105,19 +105,19 @@ class Decimal extends BaseSimple
     public function searchFor($strPattern)
     {
         // If search with wildcard => parent implementation with "LIKE" search.
-        if (false !== strpos($strPattern, '*') || false !== strpos($strPattern, '?')) {
+        if (false !== \strpos($strPattern, '*') || false !== \strpos($strPattern, '?')) {
             return parent::searchFor($strPattern);
         }
 
         // Not with wildcard but also not numeric, impossible to get decimal results.
-        if (!is_numeric($strPattern)) {
+        if (!\is_numeric($strPattern)) {
             return [];
         }
 
         // Do a simple search on given column.
         $query = $this->getMetaModel()->getServiceContainer()->getDatabase()
             ->prepare(
-                sprintf(
+                \sprintf(
                     'SELECT id FROM %s WHERE %s=?',
                     $this->getMetaModel()->getTableName(),
                     $this->getColName()
@@ -139,7 +139,7 @@ class Decimal extends BaseSimple
      */
     private function getIdsFiltered($varValue, $strOperation)
     {
-        $strSql = sprintf(
+        $strSql = \sprintf(
             'SELECT id FROM %s WHERE %s %s %f',
             $this->getMetaModel()->getTableName(),
             $this->getColName(),
