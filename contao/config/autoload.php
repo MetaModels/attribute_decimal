@@ -12,6 +12,7 @@
  * @author      Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author      Andreas Isaak <andy.jared@googlemail.com>
  * @author      Cliff Parnitzky <github@cliff-parnitzky.de>
+ * @author      Sven Baumann <baumann.sv@gmail.com>
  * @copyright   The MetaModels team.
  * @license     LGPL.
  * @filesource
@@ -20,9 +21,8 @@
 /**
  * Register the templates
  */
-TemplateLoader::addFiles(
-    array
-    (
+\Contao\TemplateLoader::addFiles(
+    [
         'mm_attr_decimal' => 'system/modules/metamodelsattribute_decimal/templates',
-    )
+    ]
 );

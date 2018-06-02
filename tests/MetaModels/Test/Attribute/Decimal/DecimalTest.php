@@ -11,7 +11,8 @@
  * @package    MetaModels
  * @subpackage Tests
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -21,11 +22,15 @@ namespace MetaModels\Test\Attribute\Decimal;
 use Contao\Database;
 use MetaModels\Attribute\Decimal\Decimal;
 use MetaModels\MetaModelsServiceContainer;
+use PHPUnit\Framework\TestCase;
+use Contao\Database\Statement;
+use Contao\Database\Result;
+use MetaModels\MetaModel;
 
 /**
  * Unit tests to test class Decimal.
  */
-class DecimalTest extends \PHPUnit_Framework_TestCase
+class DecimalTest extends TestCase
 {
     /**
      * Mock the Contao database.
@@ -39,16 +44,16 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
     private function mockDatabase($expectedQuery = '', $result = null)
     {
         $mockDb = $this
-            ->getMockBuilder('Contao\Database')
+            ->getMockBuilder(Database::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('__destruct'))
+            ->setMethods(['__destruct'])
             ->getMockForAbstractClass();
 
         $mockDb->method('createStatement')->willReturn(
             $statement = $this
-                ->getMockBuilder('Contao\Database\Statement')
+                ->getMockBuilder(Statement::class)
                 ->disableOriginalConstructor()
-                ->setMethods(array('debugQuery', 'createResult'))
+                ->setMethods(['debugQuery', 'createResult'])
                 ->getMockForAbstractClass()
         );
 
@@ -65,7 +70,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
             ->willReturnArgument(0);
 
         if ($result === null) {
-            $result = array('ignored');
+            $result = ['ignored'];
         } else {
             $result = (object) $result;
         }
@@ -78,12 +83,12 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
                 $resultData = (array) $resultData;
 
                 $resultSet = $this
-                    ->getMockBuilder('Contao\Database\Result')
+                    ->getMockBuilder(Result::class)
                     ->disableOriginalConstructor()
                     ->getMockForAbstractClass();
 
                 $resultSet->method('fetch_row')->willReturnCallback(function () use (&$index, $resultData) {
-                    return array_values($resultData[$index++]);
+                    return \array_values($resultData[$index++]);
                 });
                 $resultSet->method('fetch_assoc')->willReturnCallback(function () use (&$index, $resultData) {
                     if (!isset($resultData[$index])) {
@@ -92,13 +97,13 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
                     return $resultData[$index++];
                 });
                 $resultSet->method('num_rows')->willReturnCallback(function () use ($index, $resultData) {
-                    return count($resultData);
+                    return \count($resultData);
                 });
                 $resultSet->method('num_fields')->willReturnCallback(function () use ($index, $resultData) {
-                    return count($resultData[$index]);
+                    return \count($resultData[$index]);
                 });
                 $resultSet->method('fetch_field')->willReturnCallback(function ($field) use ($index, $resultData) {
-                    $data = array_values($resultData[$index]);
+                    $data = \array_values($resultData[$index]);
                     return $data[$field];
                 });
                 $resultSet->method('data_seek')->willReturnCallback(function ($newIndex) use (&$index, $resultData) {
@@ -125,11 +130,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
      */
     protected function mockMetaModel($language, $fallbackLanguage, $database)
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array(),
-            array(array())
-        );
+        $metaModel = $this->getMockBuilder(MetaModel::class)->setMethods([])->setConstructorArgs([[]])->getMock();
 
         $metaModel
             ->expects($this->any())
@@ -164,7 +165,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
     public function testInstantiation()
     {
         $text = new Decimal($this->mockMetaModel('en', 'en', $this->mockDatabase()));
-        $this->assertInstanceOf('MetaModels\Attribute\Decimal\Decimal', $text);
+        $this->assertInstanceOf(Decimal::class, $text);
     }
 
     /**
@@ -174,12 +175,12 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
      */
     public function searchForProvider()
     {
-        return array(
-            array('10'),
-            array('10.0'),
-            array(10),
-            array(10.5),
-        );
+        return [
+            ['10'],
+            ['10.0'],
+            [10],
+            [10.5],
+        ];
     }
 
     /**
@@ -199,13 +200,13 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
                 'en',
                 $this->mockDatabase(
                     'SELECT id FROM mm_unittest WHERE test=?',
-                    array(array('id' => 1), array('id' => 2))
+                    [['id' => 1], ['id' => 2]]
                 )
             ),
-            array('colname' => 'test')
+            ['colname' => 'test']
         );
 
-        $this->assertEquals(array(1, 2), $decimal->searchFor($value));
+        $this->assertEquals([1, 2], $decimal->searchFor($value));
     }
 
     /**
@@ -221,13 +222,13 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
                 'en',
                 $this->mockDatabase(
                     'SELECT id FROM mm_unittest WHERE test LIKE ?',
-                    array(array('id' => 1), array('id' => 2))
+                    [['id' => 1], ['id' => 2]]
                 )
             ),
-            array('colname' => 'test')
+            ['colname' => 'test']
         );
 
-        $this->assertEquals(array(1, 2), $decimal->searchFor('10*'));
+        $this->assertEquals([1, 2], $decimal->searchFor('10*'));
     }
 
     /**
@@ -243,9 +244,9 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
                 'en',
                 $this->mockDatabase()
             ),
-            array('colname' => 'test')
+            ['colname' => 'test']
         );
 
-        $this->assertEquals(array(), $decimal->searchFor('abc'));
+        $this->assertEquals([], $decimal->searchFor('abc'));
     }
 }

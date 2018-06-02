@@ -12,6 +12,7 @@
  * @author      Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author      Andreas Isaak <info@andreas-isaak.de>
  * @author      Cliff Parnitzky <github@cliff-parnitzky.de>
+ * @author      Sven Baumann <baumann.sv@gmail.com>
  * @copyright   The MetaModels team.
  * @license     LGPL.
  * @filesource
@@ -21,12 +22,11 @@ use MetaModels\Attribute\Decimal\AttributeTypeFactory;
 use MetaModels\Attribute\Events\CreateAttributeFactoryEvent;
 use MetaModels\MetaModelsEvents;
 
-return array
-(
-    MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE => array(
+return [
+    MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE => [
         function (CreateAttributeFactoryEvent $event) {
             $factory = $event->getFactory();
             $factory->addTypeFactory(new AttributeTypeFactory());
         }
-    )
-);
+    ]
+];
