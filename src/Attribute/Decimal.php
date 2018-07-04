@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,8 @@
  * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2017 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -44,21 +45,21 @@ class Decimal extends BaseSimple
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(
+        return \array_merge(
             parent::getAttributeSettingNames(),
-            array(
+            [
                 'isunique',
                 'mandatory',
                 'filterable',
                 'searchable',
-            )
+            ]
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getFieldDefinition($arrOverrides = array())
+    public function getFieldDefinition($arrOverrides = [])
     {
         $arrFieldDef = parent::getFieldDefinition($arrOverrides);
 
@@ -105,13 +106,13 @@ class Decimal extends BaseSimple
     public function searchFor($strPattern)
     {
         // If search with wildcard => parent implementation with "LIKE" search.
-        if (false !== strpos($strPattern, '*') || false !== strpos($strPattern, '?')) {
+        if (false !== \strpos($strPattern, '*') || false !== \strpos($strPattern, '?')) {
             return parent::searchFor($strPattern);
         }
 
         // Not with wildcard but also not numeric, impossible to get decimal results.
-        if (!is_numeric($strPattern)) {
-            return array();
+        if (!\is_numeric($strPattern)) {
+            return [];
         }
 
         // Do a simple search on given column.
@@ -124,7 +125,7 @@ class Decimal extends BaseSimple
 
         return $query->fetchAll(\PDO::FETCH_COLUMN, 'id');
     }
-    
+
     /**
      * Filter all values by specified operation.
      *
@@ -136,12 +137,12 @@ class Decimal extends BaseSimple
      */
     private function getIdsFiltered($varValue, $strOperation)
     {
-        $strSql = sprintf(
+        $strSql = \sprintf(
             'SELECT id FROM %s WHERE %s %s %f',
             $this->getMetaModel()->getTableName(),
             $this->getColName(),
             $strOperation,
-            floatval($varValue)
+            (float) $varValue
         );
 
         $statement = $this->connection->query($strSql);

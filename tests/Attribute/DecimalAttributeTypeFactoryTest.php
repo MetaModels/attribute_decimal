@@ -12,7 +12,8 @@
  * @subpackage Tests
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -26,6 +27,7 @@ use MetaModels\AttributeDecimalBundle\Attribute\Decimal;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use PHPUnit\Framework\TestCase;
+use MetaModels\MetaModel;
 
 /**
  * Test the attribute factory.
@@ -45,7 +47,7 @@ class DecimalAttributeTypeFactoryTest extends TestCase
      */
     protected function mockMetaModel($tableName, $language, $fallbackLanguage)
     {
-        $metaModel = $this->getMockBuilder('MetaModels\IMetaModel')->getMock();
+        $metaModel = $this->getMockBuilder(MetaModel::class)->setMethods([])->setConstructorArgs([[]])->getMock();
 
         $metaModel
             ->expects($this->any())
@@ -101,7 +103,7 @@ class DecimalAttributeTypeFactoryTest extends TestCase
         $connection  = $this->mockConnection();
         $manipulator = $this->mockTableManipulator($connection);
 
-        return array(new AttributeTypeFactory($connection, $manipulator));
+        return [new AttributeTypeFactory($connection, $manipulator)];
     }
 
     /**
@@ -115,8 +117,7 @@ class DecimalAttributeTypeFactoryTest extends TestCase
         $manipulator = $this->mockTableManipulator($connection);
 
         $factory   = new AttributeTypeFactory($connection, $manipulator);
-        $values    = array(
-        );
+        $values    = [];
         $attribute = $factory->createInstance(
             $values,
             $this->mockMetaModel('mm_test', 'de', 'en')
