@@ -1,20 +1,21 @@
 <?php
 /**
- * The MetaModels extension allows the creation of multiple collections of custom items,
- * each with its own unique set of selectable attributes, with attribute extendability.
- * The Front-End modules allow you to build powerful listing and filtering of the
- * data in each collection.
+ * This file is part of MetaModels/attribute_decimal.
  *
- * PHP version 5
+ * (c) 2012-2019 The MetaModels team.
  *
- * @package     MetaModels
- * @subpackage  AttributeDecimal
- * @author      Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @author      Andreas Isaak <andy.jared@googlemail.com>
- * @author      Cliff Parnitzky <github@cliff-parnitzky.de>
- * @author      Sven Baumann <baumann.sv@gmail.com>
- * @copyright   The MetaModels team.
- * @license     LGPL.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
+ *
+ * @package    MetaModels/attribute_decimal
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Andreas Isaak <andy.jared@googlemail.com>
+ * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2019 The MetaModels team.
+ * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
