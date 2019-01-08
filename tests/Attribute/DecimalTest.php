@@ -1,19 +1,21 @@
 <?php
 
 /**
- * The MetaModels extension allows the creation of multiple collections of custom items,
- * each with its own unique set of selectable attributes, with attribute extendability.
- * The Front-End modules allow you to build powerful listing and filtering of the
- * data in each collection.
+ * This file is part of MetaModels/attribute_decimal.
  *
- * PHP version 5
+ * (c) 2012-2019 The MetaModels team.
  *
- * @package    MetaModels
- * @subpackage Tests
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
+ *
+ * @package    MetaModels/attribute_decimal
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2016 The MetaModels team.
- * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2019 The MetaModels team.
+ * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -151,12 +153,12 @@ class DecimalTest extends TestCase
      */
     public function searchForProvider()
     {
-        return array(
-            array('10'),
-            array('10.0'),
-            array(10),
-            array(10.5),
-        );
+        return [
+            ['10'],
+            ['10.0'],
+            [10],
+            [10.5],
+        ];
     }
 
     /**
@@ -184,7 +186,7 @@ class DecimalTest extends TestCase
             ->expects($this->once())
             ->method('fetchAll')
             ->with(\PDO::FETCH_COLUMN, 'id')
-            ->willReturn(array(1,2));
+            ->willReturn([1, 2]);
 
         $connection
             ->expects($this->once())
@@ -196,12 +198,12 @@ class DecimalTest extends TestCase
                 'en',
                 'en'
             ),
-            array('colname' => 'test'),
+            ['colname' => 'test'],
             $connection,
             $manipulator
         );
 
-        $this->assertEquals(array(1, 2), $decimal->searchFor($value));
+        $this->assertEquals([1, 2], $decimal->searchFor($value));
     }
 
     /**
@@ -226,7 +228,7 @@ class DecimalTest extends TestCase
             ->expects($this->once())
             ->method('fetchAll')
             ->with(\PDO::FETCH_COLUMN, 'id')
-            ->willReturn(array(1,2));
+            ->willReturn([1, 2]);
 
         $connection
             ->expects($this->once())
@@ -235,12 +237,12 @@ class DecimalTest extends TestCase
 
         $decimal = new Decimal(
             $this->mockMetaModel('en', 'en'),
-            array('colname' => 'test'),
+            ['colname' => 'test'],
             $connection,
             $manipulator
         );
 
-        $this->assertEquals(array(1, 2), $decimal->searchFor('10*'));
+        $this->assertEquals([1, 2], $decimal->searchFor('10*'));
     }
 
     /**
@@ -258,11 +260,11 @@ class DecimalTest extends TestCase
                 'en',
                 'en'
             ),
-            array('colname' => 'test'),
+            ['colname' => 'test'],
             $connection,
             $manipulator
         );
 
-        $this->assertEquals(array(), $decimal->searchFor('abc'));
+        $this->assertEquals([], $decimal->searchFor('abc'));
     }
 }
