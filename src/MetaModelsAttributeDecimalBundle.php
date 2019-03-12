@@ -11,13 +11,20 @@
  * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels/attribute_decimal
- * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @author     Andreas Isaak <andy.jared@googlemail.com>
- * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
- * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @author     David Molineus <david.molineus@netzmacht.de>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['decimal extends _simpleattribute_'] = [];
+namespace MetaModels\AttributeDecimalBundle;
+
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+/**
+ * The Bundle class.
+ */
+class MetaModelsAttributeDecimalBundle extends Bundle
+{
+
+}

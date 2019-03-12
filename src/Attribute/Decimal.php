@@ -14,6 +14,7 @@
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
  * @copyright  2012-2019 The MetaModels team.
@@ -21,7 +22,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Decimal;
+namespace MetaModels\AttributeDecimalBundle\Attribute;
 
 use MetaModels\Attribute\BaseSimple;
 
@@ -114,17 +115,14 @@ class Decimal extends BaseSimple
         }
 
         // Do a simple search on given column.
-        $query = $this->getMetaModel()->getServiceContainer()->getDatabase()
-            ->prepare(
-                \sprintf(
-                    'SELECT id FROM %s WHERE %s=?',
-                    $this->getMetaModel()->getTableName(),
-                    $this->getColName()
-                )
-            )
-            ->execute($strPattern);
+        $query = $this->connection->createQueryBuilder()
+            ->select('id')
+            ->from($this->getMetaModel()->getTableName())
+            ->where($this->getColName() . '=:value')
+            ->setParameter('value', $strPattern)
+            ->execute();
 
-        return $query->fetchEach('id');
+        return $query->fetchAll(\PDO::FETCH_COLUMN, 'id');
     }
 
     /**
@@ -146,8 +144,8 @@ class Decimal extends BaseSimple
             (float) $varValue
         );
 
-        $objIds = $this->getMetaModel()->getServiceContainer()->getDatabase()->execute($strSql);
+        $statement = $this->connection->query($strSql);
 
-        return $objIds->fetchEach('id');
+        return $statement->fetchAll(\PDO::FETCH_COLUMN, 'id');
     }
 }
