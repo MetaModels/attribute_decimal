@@ -126,6 +126,16 @@ class Decimal extends BaseSimple
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * This is needed for compatibility with MySQL strict mode so we will not write an empty string to decimal col.
+     */
+    public function serializeData($value)
+    {
+        return $value === '' ? null : $value;
+    }
+
+    /**
      * Filter all values by specified operation.
      *
      * @param int    $varValue     The value to use as upper end.
