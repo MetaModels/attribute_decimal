@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2020 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
- * @copyright  2012-2019 The MetaModels team.
+ * @copyright  2012-2020 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -116,9 +116,9 @@ class Decimal extends BaseSimple
 
         // Do a simple search on given column.
         $query = $this->connection->createQueryBuilder()
-            ->select('id')
-            ->from($this->getMetaModel()->getTableName())
-            ->where($this->getColName() . '=:value')
+            ->select('t.id')
+            ->from($this->getMetaModel()->getTableName(), 't')
+            ->where('t.' . $this->getColName() . '=:value')
             ->setParameter('value', $strPattern)
             ->execute();
 
@@ -147,7 +147,7 @@ class Decimal extends BaseSimple
     private function getIdsFiltered($varValue, $strOperation)
     {
         $strSql = \sprintf(
-            'SELECT id FROM %s WHERE %s %s %f',
+            'SELECT t.id FROM %s AS t WHERE t.%s %s %f',
             $this->getMetaModel()->getTableName(),
             $this->getColName(),
             $strOperation,
