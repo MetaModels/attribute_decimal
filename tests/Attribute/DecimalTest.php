@@ -26,6 +26,7 @@ use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
 use MetaModels\AttributeDecimalBundle\Attribute\Decimal;
 use MetaModels\Helper\TableManipulator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -73,7 +74,7 @@ class DecimalTest extends TestCase
      *
      * @param callable|null $callback     Callback which gets mocked statement passed.
      *
-     * @return Connection|\PHPUnit_Framework_MockObject_MockObject
+     * @return Connection|MockObject
      */
     private function mockConnection(callable $callback = null, $expectedQuery = null, $queryMethod = 'prepare')
     {
@@ -125,7 +126,7 @@ class DecimalTest extends TestCase
      *
      * @param Connection $connection The database connection mock.
      *
-     * @return TableManipulator|\PHPUnit_Framework_MockObject_MockObject
+     * @return TableManipulator|MockObject
      */
     private function mockTableManipulator(Connection $connection)
     {

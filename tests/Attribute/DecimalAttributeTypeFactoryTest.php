@@ -27,6 +27,7 @@ use MetaModels\AttributeDecimalBundle\Attribute\AttributeTypeFactory;
 use MetaModels\AttributeDecimalBundle\Attribute\Decimal;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use MetaModels\MetaModel;
 
@@ -73,7 +74,7 @@ class DecimalAttributeTypeFactoryTest extends TestCase
     /**
      * Mock the database connection.
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|Connection
+     * @return MockObject|Connection
      */
     private function mockConnection()
     {
@@ -87,7 +88,7 @@ class DecimalAttributeTypeFactoryTest extends TestCase
      *
      * @param Connection $connection The database connection mock.
      *
-     * @return TableManipulator|\PHPUnit_Framework_MockObject_MockObject
+     * @return TableManipulator|MockObject
      */
     private function mockTableManipulator(Connection $connection)
     {
