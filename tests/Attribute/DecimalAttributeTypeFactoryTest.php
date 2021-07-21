@@ -32,6 +32,8 @@ use MetaModels\MetaModel;
 
 /**
  * Test the attribute factory.
+ *
+ * @covers \MetaModels\AttributeDecimalBundle\Attribute\AttributeTypeFactory
  */
 class DecimalAttributeTypeFactoryTest extends TestCase
 {

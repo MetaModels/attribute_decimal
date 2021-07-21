@@ -30,6 +30,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Decimal.
+ *
+ * @covers \MetaModels\AttributeDecimalBundle\Attribute\Decimal
  */
 class DecimalTest extends TestCase
 {

@@ -12,6 +12,7 @@
  *
  * @package    MetaModels/attribute_decimal
  * @author     David Molineus <david.molineus@netzmacht.de>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -28,6 +29,8 @@ use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 /**
  * This test case test the extension.
+ *
+ * @covers \MetaModels\AttributeDecimalBundle\DependencyInjection\MetaModelsAttributeDecimalExtension
  */
 class MetaModelsAttributeDecimalExtensionTest extends TestCase
 {
