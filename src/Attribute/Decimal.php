@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2020 The MetaModels team.
+ * (c) 2012-2022 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,8 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
- * @copyright  2012-2020 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2022 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -120,9 +121,9 @@ class Decimal extends BaseSimple
             ->from($this->getMetaModel()->getTableName(), 't')
             ->where('t.' . $this->getColName() . '=:value')
             ->setParameter('value', $strPattern)
-            ->execute();
+            ->executeQuery();
 
-        return $query->fetchAll(\PDO::FETCH_COLUMN, 'id');
+        return $query->fetchFirstColumn();
     }
 
     /**
@@ -156,6 +157,6 @@ class Decimal extends BaseSimple
 
         $statement = $this->connection->query($strSql);
 
-        return $statement->fetchAll(\PDO::FETCH_COLUMN, 'id');
+        return $statement->fetchFirstColumn();
     }
 }
