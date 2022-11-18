@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2022 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,8 @@
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2019 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2022 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -27,11 +28,14 @@ use MetaModels\AttributeDecimalBundle\Attribute\AttributeTypeFactory;
 use MetaModels\AttributeDecimalBundle\Attribute\Decimal;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use MetaModels\MetaModel;
 
 /**
  * Test the attribute factory.
+ *
+ * @covers \MetaModels\AttributeDecimalBundle\Attribute\AttributeTypeFactory
  */
 class DecimalAttributeTypeFactoryTest extends TestCase
 {
@@ -39,9 +43,7 @@ class DecimalAttributeTypeFactoryTest extends TestCase
      * Mock a MetaModel.
      *
      * @param string $tableName        The table name.
-     *
      * @param string $language         The language.
-     *
      * @param string $fallbackLanguage The fallback language.
      *
      * @return IMetaModel
@@ -71,7 +73,7 @@ class DecimalAttributeTypeFactoryTest extends TestCase
     /**
      * Mock the database connection.
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|Connection
+     * @return MockObject|Connection
      */
     private function mockConnection()
     {
@@ -85,7 +87,7 @@ class DecimalAttributeTypeFactoryTest extends TestCase
      *
      * @param Connection $connection The database connection mock.
      *
-     * @return TableManipulator|\PHPUnit_Framework_MockObject_MockObject
+     * @return TableManipulator|MockObject
      */
     private function mockTableManipulator(Connection $connection)
     {
