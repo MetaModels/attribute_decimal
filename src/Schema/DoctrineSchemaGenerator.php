@@ -44,8 +44,7 @@ class DoctrineSchemaGenerator extends AbstractAttributeTypeSchemaGenerator
      */
     protected function generateAttribute(Table $tableSchema, AttributeInformation $attribute): void
     {
-        $this->setColumnData($tableSchema, $attribute->getName(), Types::DECIMAL, [
-            'default' => NULL,
+        $this->setColumnData($tableSchema, $attribute->getName(), Types::FLOAT, [
             'notnull' => false,
         ]);
     }
