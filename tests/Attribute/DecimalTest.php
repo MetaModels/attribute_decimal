@@ -71,8 +71,9 @@ class DecimalTest extends TestCase
     /**
      * Mock the Contao database.
      *
-     * @param string|null   expectedQuery The query to expect.
-     * @param callable|null $callback     Callback which gets mocked statement passed.
+     * @param callable|null $callback      Callback which gets mocked statement passed.
+     * @param string|null   $expectedQuery The query to expect.
+     * @param string        $queryMethod   The query method.
      *
      * @return Connection|MockObject
      */
@@ -88,17 +89,17 @@ class DecimalTest extends TestCase
             ->getMock();
 
         $mockDb->method('prepare')->willReturn($statement);
-        $mockDb->method('query')->willReturn($statement);
+        $mockDb->method('executeQuery')->willReturn($statement);
 
         if ($callback) {
-            call_user_func($callback, $statement);
+            \call_user_func($callback, $statement);
         }
 
         if (!$expectedQuery || $expectedQuery === 'prepare') {
-            $mockDb->expects($this->never())->method('query');
+            $mockDb->expects($this->never())->method('executeQuery');
         }
 
-        if (!$expectedQuery || $expectedQuery === 'query') {
+        if (!$expectedQuery || $expectedQuery === 'executeQuery') {
             $mockDb->expects($this->never())->method('prepare');
         }
 
@@ -114,7 +115,7 @@ class DecimalTest extends TestCase
         if ($queryMethod === 'prepare') {
             $statement
                 ->expects($this->once())
-                ->method('execute')
+                ->method('executeQuery')
                 ->willReturn(true);
         }
 

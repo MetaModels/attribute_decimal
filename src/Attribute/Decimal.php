@@ -113,7 +113,7 @@ class Decimal extends BaseSimple
     public function searchFor($strPattern)
     {
         // If search with wildcard => parent implementation with "LIKE" search.
-        if (false !== strpos($strPattern, '*') || false !== strpos($strPattern, '?')) {
+        if (str_contains($strPattern, '*') || \str_contains($strPattern, '?')) {
             return parent::searchFor($strPattern);
         }
 
@@ -150,7 +150,7 @@ class Decimal extends BaseSimple
      * @param int    $varValue     The value to use as upper end.
      * @param string $strOperation The specified operation like greater than, lower than etc.
      *
-     * @return string[] The list of item ids of all items matching the condition.
+     * @return list<string> The list of item ids of all items matching the condition.
      *
      * @throws Exception
      */
