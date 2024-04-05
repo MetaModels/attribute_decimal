@@ -69,57 +69,15 @@ class DecimalTest extends TestCase
     }
 
     /**
-     * Mock the Contao database.
+     * Mock the database connection.
      *
-     * @param callable|null $callback      Callback which gets mocked statement passed.
-     * @param string|null   $expectedQuery The query to expect.
-     * @param string        $queryMethod   The query method.
-     *
-     * @return Connection|MockObject
+     * @return MockObject|Connection
      */
-    private function mockConnection(callable $callback = null, $expectedQuery = null, $queryMethod = 'prepare')
+    private function mockConnection()
     {
-        $mockDb = $this
-            ->getMockBuilder(Connection::class)
+        return $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $statement = $this
-            ->getMockBuilder(Statement::class)
-            ->getMock();
-
-        $mockDb->method('prepare')->willReturn($statement);
-        $mockDb->method('executeQuery')->willReturn($statement);
-
-        if ($callback) {
-            \call_user_func($callback, $statement);
-        }
-
-        if (!$expectedQuery || $expectedQuery === 'prepare') {
-            $mockDb->expects($this->never())->method('executeQuery');
-        }
-
-        if (!$expectedQuery || $expectedQuery === 'executeQuery') {
-            $mockDb->expects($this->never())->method('prepare');
-        }
-
-        if (!$expectedQuery) {
-            return $mockDb;
-        }
-
-        $mockDb
-            ->expects($this->once())
-            ->method($queryMethod)
-            ->with($expectedQuery);
-
-        if ($queryMethod === 'prepare') {
-            $statement
-                ->expects($this->once())
-                ->method('executeQuery')
-                ->willReturn(true);
-        }
-
-        return $mockDb;
     }
 
     /**
@@ -188,8 +146,6 @@ class DecimalTest extends TestCase
         $statement = $this->getMockBuilder(Statement::class)->getMock();
         $statement
             ->expects($this->once())
-            ->method('fetchAll')
-            ->with(\PDO::FETCH_COLUMN, 'id')
             ->willReturn([1, 2]);
 
         $connection
@@ -230,8 +186,6 @@ class DecimalTest extends TestCase
         $statement = $this->getMockBuilder(Statement::class)->getMock();
         $statement
             ->expects($this->once())
-            ->method('fetchAll')
-            ->with(\PDO::FETCH_COLUMN, 'id')
             ->willReturn([1, 2]);
 
         $connection
