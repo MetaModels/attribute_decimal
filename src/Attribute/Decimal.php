@@ -25,6 +25,7 @@
 
 namespace MetaModels\AttributeDecimalBundle\Attribute;
 
+use Doctrine\DBAL\Exception;
 use MetaModels\Attribute\BaseSimple;
 
 use function array_map;
@@ -112,7 +113,7 @@ class Decimal extends BaseSimple
     public function searchFor($strPattern)
     {
         // If search with wildcard => parent implementation with "LIKE" search.
-        if (false !== strpos($strPattern, '*') || false !== strpos($strPattern, '?')) {
+        if (str_contains($strPattern, '*') || \str_contains($strPattern, '?')) {
             return parent::searchFor($strPattern);
         }
 
@@ -147,12 +148,13 @@ class Decimal extends BaseSimple
      * Filter all values by specified operation.
      *
      * @param int    $varValue     The value to use as upper end.
-     *
      * @param string $strOperation The specified operation like greater than, lower than etc.
      *
-     * @return string[] The list of item ids of all items matching the condition.
+     * @return list<string> The list of item ids of all items matching the condition.
+     *
+     * @throws Exception
      */
-    private function getIdsFiltered($varValue, $strOperation)
+    private function getIdsFiltered(int $varValue, string $strOperation): array
     {
         $strSql = sprintf(
             'SELECT t.id FROM %s AS t WHERE t.%s %s %f',
@@ -162,8 +164,6 @@ class Decimal extends BaseSimple
             (float) $varValue
         );
 
-        $statement = $this->connection->query($strSql);
-
-        return $statement->fetchFirstColumn();
+        return $this->connection->executeQuery($strSql)->fetchFirstColumn();
     }
 }
