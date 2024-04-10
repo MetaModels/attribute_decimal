@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2022 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,7 +18,7 @@
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2022 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -26,6 +26,12 @@
 namespace MetaModels\AttributeDecimalBundle\Attribute;
 
 use MetaModels\Attribute\BaseSimple;
+
+use function array_map;
+use function array_merge;
+use function is_numeric;
+use function sprintf;
+use function strpos;
 
 /**
  * This is the MetaModelAttribute class for handling decimal fields.
@@ -45,7 +51,7 @@ class Decimal extends BaseSimple
      */
     public function getAttributeSettingNames()
     {
-        return \array_merge(
+        return array_merge(
             parent::getAttributeSettingNames(),
             [
                 'isunique',
@@ -101,29 +107,30 @@ class Decimal extends BaseSimple
      *
      * @param string $strPattern The text to search for. This may contain wildcards.
      *
-     * @return int[] the ids of matching items.
+     * @return list<string> the ids of matching items.
      */
     public function searchFor($strPattern)
     {
         // If search with wildcard => parent implementation with "LIKE" search.
-        if (false !== \strpos($strPattern, '*') || false !== \strpos($strPattern, '?')) {
+        if (false !== strpos($strPattern, '*') || false !== strpos($strPattern, '?')) {
             return parent::searchFor($strPattern);
         }
 
         // Not with wildcard but also not numeric, impossible to get decimal results.
-        if (!\is_numeric($strPattern)) {
+        if (!is_numeric($strPattern)) {
             return [];
         }
 
         // Do a simple search on given column.
-        $query = $this->connection->createQueryBuilder()
+        $statement = $this->connection->createQueryBuilder()
             ->select('t.id')
             ->from($this->getMetaModel()->getTableName(), 't')
             ->where('t.' . $this->getColName() . '=:value')
             ->setParameter('value', $strPattern)
             ->executeQuery();
 
-        return $query->fetchFirstColumn();
+        // Return value list as list<mixed>, parent function wants a list<string> so we make a cast.
+        return array_map(static fn(mixed $value) => (string) $value, $statement->fetchFirstColumn());
     }
 
     /**
@@ -147,7 +154,7 @@ class Decimal extends BaseSimple
      */
     private function getIdsFiltered($varValue, $strOperation)
     {
-        $strSql = \sprintf(
+        $strSql = sprintf(
             'SELECT t.id FROM %s AS t WHERE t.%s %s %f',
             $this->getMetaModel()->getTableName(),
             $this->getColName(),
