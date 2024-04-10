@@ -23,8 +23,8 @@
 namespace MetaModels\AttributeDecimalBundle\Test\Attribute;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
 use MetaModels\AttributeDecimalBundle\Attribute\Decimal;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
@@ -136,22 +136,32 @@ class DecimalTest extends TestCase
     {
         $connection   = $this->mockConnection();
         $manipulator  = $this->mockTableManipulator($connection);
-        $queryBuilder = new QueryBuilder($connection);
+        $builder = $this
+            ->getMockBuilder(QueryBuilder::class)
+            ->setConstructorArgs([$connection])
+            ->getMock();
 
         $connection
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($queryBuilder);
+            ->willReturn($builder);
 
-        $statement = $this->getMockBuilder(Statement::class)->getMock();
-        $statement
-            ->expects($this->once())
+        $result = $this
+            ->getMockBuilder(Result::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['fetchFirstColumn'])
+            ->getMock();
+
+        $result
+            ->expects(self::once())
+            ->method('fetchFirstColumn')
             ->willReturn([1, 2]);
 
-        $connection
-            ->expects($this->once())
-            ->method('executeQuery')
-            ->willReturn($statement);
+        $builder->expects(self::once())->method('select')->with('t.id')->willReturn($builder);
+        $builder->expects(self::once())->method('from')->with('mm_unittest', 't')->willReturn($builder);
+        $builder->expects(self::once())->method('where')->with('t.test=:value')->willReturn($builder);
+        $builder->expects(self::once())->method('setParameter')->with('value', $value)->willReturn($builder);
+        $builder->expects(self::once())->method('executeQuery')->willReturn($result);
 
         $decimal = new Decimal(
             $this->mockMetaModel(
@@ -173,25 +183,34 @@ class DecimalTest extends TestCase
      */
     public function testSearchForWithWildcard()
     {
-        $connection  = $this->mockConnection();
-        $manipulator = $this->mockTableManipulator($connection);
-
-        $queryBuilder = new QueryBuilder($connection);
+        $connection   = $this->mockConnection();
+        $manipulator  = $this->mockTableManipulator($connection);
+        $builder = $this
+            ->getMockBuilder(QueryBuilder::class)
+            ->setConstructorArgs([$connection])
+            ->getMock();
 
         $connection
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($queryBuilder);
+            ->willReturn($builder);
 
-        $statement = $this->getMockBuilder(Statement::class)->getMock();
-        $statement
-            ->expects($this->once())
+        $result = $this
+            ->getMockBuilder(Result::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['fetchFirstColumn'])
+            ->getMock();
+
+        $result
+            ->expects(self::once())
+            ->method('fetchFirstColumn')
             ->willReturn([1, 2]);
 
-        $connection
-            ->expects($this->once())
-            ->method('executeQuery')
-            ->willReturn($statement);
+        $builder->expects(self::once())->method('select')->with('t.id')->willReturn($builder);
+        $builder->expects(self::once())->method('from')->with('mm_unittest', 't')->willReturn($builder);
+        $builder->expects(self::once())->method('where')->with('t.test LIKE :pattern')->willReturn($builder);
+        $builder->expects(self::once())->method('setParameter')->with('pattern', '10%')->willReturn($builder);
+        $builder->expects(self::once())->method('executeQuery')->willReturn($result);
 
         $decimal = new Decimal(
             $this->mockMetaModel('en', 'en'),
