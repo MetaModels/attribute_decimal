@@ -101,14 +101,7 @@ class Decimal extends BaseSimple
     }
 
     /**
-     * Search all items that match the given expression.
-     *
-     * Base implementation, perform string matching search.
-     * The standard wildcards * (many characters) and ? (a single character) are supported.
-     *
-     * @param string $strPattern The text to search for. This may contain wildcards.
-     *
-     * @return list<string> the ids of matching items.
+     * {@inheritdoc}
      */
     public function searchFor($strPattern)
     {
