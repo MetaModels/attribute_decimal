@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,24 +18,34 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2019 The MetaModels team.
+ * @copyright  2012-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['decimal'] = array
-(
-    'presentation' => array
-    (
+use Contao\System;
+use MetaModels\ContaoFrontendEditingBundle\MetaModelsContaoFrontendEditingBundle;
+
+$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['decimal'] = [
+    'presentation' => [
         'tl_class',
-    ),
-    'functions'  => array
-    (
+        'be_template',
+    ],
+    'functions'    => [
         'mandatory',
-    ),
-    'overview' => array
-    (
+    ],
+    'overview'     => [
         'filterable',
         'searchable',
-    )
-);
+    ]
+];
+
+// Load configuration for the frontend editing.
+if (\in_array(
+    MetaModelsContaoFrontendEditingBundle::class,
+    System::getContainer()->getParameter('kernel.bundles'),
+    true
+)) {
+    $GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['decimal']['presentation'][] =
+        'fe_template';
+}

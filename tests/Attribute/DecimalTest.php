@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2022 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,7 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2022 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -23,10 +23,11 @@
 namespace MetaModels\AttributeDecimalBundle\Test\Attribute;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
 use MetaModels\AttributeDecimalBundle\Attribute\Decimal;
 use MetaModels\Helper\TableManipulator;
+use MetaModels\IMetaModel;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -47,77 +48,36 @@ class DecimalTest extends TestCase
      */
     protected function mockMetaModel($language, $fallbackLanguage)
     {
-        $metaModel = $this->getMockBuilder('MetaModels\IMetaModel')->getMock();
+        $metaModel = $this->getMockBuilder(IMetaModel::class)->getMock();
 
         $metaModel
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getTableName')
-            ->will($this->returnValue('mm_unittest'));
+            ->willReturn('mm_unittest');
 
         $metaModel
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getActiveLanguage')
-            ->will($this->returnValue($language));
+            ->willReturn($language);
 
         $metaModel
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getFallbackLanguage')
-            ->will($this->returnValue($fallbackLanguage));
+            ->willReturn($fallbackLanguage);
 
         return $metaModel;
     }
 
     /**
-     * Mock the Contao database.
+     * Mock the database connection.
      *
-     * @param string|null   expectedQuery The query to expect.
-     * @param callable|null $callback     Callback which gets mocked statement passed.
-     *
-     * @return Connection|MockObject
+     * @return MockObject|Connection
      */
-    private function mockConnection(callable $callback = null, $expectedQuery = null, $queryMethod = 'prepare')
+    private function mockConnection()
     {
-        $mockDb = $this
-            ->getMockBuilder(Connection::class)
+        return $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $statement = $this
-            ->getMockBuilder(Statement::class)
-            ->getMock();
-
-        $mockDb->method('prepare')->willReturn($statement);
-        $mockDb->method('query')->willReturn($statement);
-
-        if ($callback) {
-            call_user_func($callback, $statement);
-        }
-
-        if (!$expectedQuery || $expectedQuery === 'prepare') {
-            $mockDb->expects($this->never())->method('query');
-        }
-
-        if (!$expectedQuery || $expectedQuery === 'query') {
-            $mockDb->expects($this->never())->method('prepare');
-        }
-
-        if (!$expectedQuery) {
-            return $mockDb;
-        }
-
-        $mockDb
-            ->expects($this->once())
-            ->method($queryMethod)
-            ->with($expectedQuery);
-
-        if ($queryMethod === 'prepare') {
-            $statement
-                ->expects($this->once())
-                ->method('execute')
-                ->willReturn(true);
-        }
-
-        return $mockDb;
     }
 
     /**
@@ -176,24 +136,32 @@ class DecimalTest extends TestCase
     {
         $connection   = $this->mockConnection();
         $manipulator  = $this->mockTableManipulator($connection);
-        $queryBuilder = new QueryBuilder($connection);
+        $builder = $this
+            ->getMockBuilder(QueryBuilder::class)
+            ->setConstructorArgs([$connection])
+            ->getMock();
 
         $connection
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($queryBuilder);
+            ->willReturn($builder);
 
-        $statement = $this->getMockBuilder(Statement::class)->getMock();
-        $statement
-            ->expects($this->once())
-            ->method('fetchAll')
-            ->with(\PDO::FETCH_COLUMN, 'id')
+        $result = $this
+            ->getMockBuilder(Result::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['fetchFirstColumn'])
+            ->getMock();
+
+        $result
+            ->expects(self::once())
+            ->method('fetchFirstColumn')
             ->willReturn([1, 2]);
 
-        $connection
-            ->expects($this->once())
-            ->method('executeQuery')
-            ->willReturn($statement);
+        $builder->expects(self::once())->method('select')->with('t.id')->willReturn($builder);
+        $builder->expects(self::once())->method('from')->with('mm_unittest', 't')->willReturn($builder);
+        $builder->expects(self::once())->method('where')->with('t.test=:value')->willReturn($builder);
+        $builder->expects(self::once())->method('setParameter')->with('value', $value)->willReturn($builder);
+        $builder->expects(self::once())->method('executeQuery')->willReturn($result);
 
         $decimal = new Decimal(
             $this->mockMetaModel(
@@ -215,27 +183,34 @@ class DecimalTest extends TestCase
      */
     public function testSearchForWithWildcard()
     {
-        $connection  = $this->mockConnection();
-        $manipulator = $this->mockTableManipulator($connection);
-
-        $queryBuilder = new QueryBuilder($connection);
+        $connection   = $this->mockConnection();
+        $manipulator  = $this->mockTableManipulator($connection);
+        $builder = $this
+            ->getMockBuilder(QueryBuilder::class)
+            ->setConstructorArgs([$connection])
+            ->getMock();
 
         $connection
             ->expects($this->once())
             ->method('createQueryBuilder')
-            ->willReturn($queryBuilder);
+            ->willReturn($builder);
 
-        $statement = $this->getMockBuilder(Statement::class)->getMock();
-        $statement
-            ->expects($this->once())
-            ->method('fetchAll')
-            ->with(\PDO::FETCH_COLUMN, 'id')
+        $result = $this
+            ->getMockBuilder(Result::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['fetchFirstColumn'])
+            ->getMock();
+
+        $result
+            ->expects(self::once())
+            ->method('fetchFirstColumn')
             ->willReturn([1, 2]);
 
-        $connection
-            ->expects($this->once())
-            ->method('executeQuery')
-            ->willReturn($statement);
+        $builder->expects(self::once())->method('select')->with('t.id')->willReturn($builder);
+        $builder->expects(self::once())->method('from')->with('mm_unittest', 't')->willReturn($builder);
+        $builder->expects(self::once())->method('where')->with('t.test LIKE :pattern')->willReturn($builder);
+        $builder->expects(self::once())->method('setParameter')->with('pattern', '10%')->willReturn($builder);
+        $builder->expects(self::once())->method('executeQuery')->willReturn($result);
 
         $decimal = new Decimal(
             $this->mockMetaModel('en', 'en'),

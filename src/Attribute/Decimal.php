@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_decimal.
  *
- * (c) 2012-2020 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,14 +17,21 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
- * @copyright  2012-2020 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_decimal/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 namespace MetaModels\AttributeDecimalBundle\Attribute;
 
+use Doctrine\DBAL\Exception;
 use MetaModels\Attribute\BaseSimple;
+
+use function array_map;
+use function array_merge;
+use function is_numeric;
+use function sprintf;
 
 /**
  * This is the MetaModelAttribute class for handling decimal fields.
@@ -44,7 +51,7 @@ class Decimal extends BaseSimple
      */
     public function getAttributeSettingNames()
     {
-        return \array_merge(
+        return array_merge(
             parent::getAttributeSettingNames(),
             [
                 'isunique',
@@ -93,36 +100,30 @@ class Decimal extends BaseSimple
     }
 
     /**
-     * Search all items that match the given expression.
-     *
-     * Base implementation, perform string matching search.
-     * The standard wildcards * (many characters) and ? (a single character) are supported.
-     *
-     * @param string $strPattern The text to search for. This may contain wildcards.
-     *
-     * @return int[] the ids of matching items.
+     * {@inheritdoc}
      */
     public function searchFor($strPattern)
     {
         // If search with wildcard => parent implementation with "LIKE" search.
-        if (false !== \strpos($strPattern, '*') || false !== \strpos($strPattern, '?')) {
+        if (str_contains($strPattern, '*') || \str_contains($strPattern, '?')) {
             return parent::searchFor($strPattern);
         }
 
         // Not with wildcard but also not numeric, impossible to get decimal results.
-        if (!\is_numeric($strPattern)) {
+        if (!is_numeric($strPattern)) {
             return [];
         }
 
         // Do a simple search on given column.
-        $query = $this->connection->createQueryBuilder()
+        $statement = $this->connection->createQueryBuilder()
             ->select('t.id')
             ->from($this->getMetaModel()->getTableName(), 't')
             ->where('t.' . $this->getColName() . '=:value')
             ->setParameter('value', $strPattern)
-            ->execute();
+            ->executeQuery();
 
-        return $query->fetchAll(\PDO::FETCH_COLUMN, 'id');
+        // Return value list as list<mixed>, parent function wants a list<string> so we make a cast.
+        return array_map(static fn(mixed $value) => (string) $value, $statement->fetchFirstColumn());
     }
 
     /**
@@ -139,14 +140,15 @@ class Decimal extends BaseSimple
      * Filter all values by specified operation.
      *
      * @param int    $varValue     The value to use as upper end.
-     *
      * @param string $strOperation The specified operation like greater than, lower than etc.
      *
-     * @return string[] The list of item ids of all items matching the condition.
+     * @return list<string> The list of item ids of all items matching the condition.
+     *
+     * @throws Exception
      */
-    private function getIdsFiltered($varValue, $strOperation)
+    private function getIdsFiltered(int $varValue, string $strOperation): array
     {
-        $strSql = \sprintf(
+        $strSql = sprintf(
             'SELECT t.id FROM %s AS t WHERE t.%s %s %f',
             $this->getMetaModel()->getTableName(),
             $this->getColName(),
@@ -154,8 +156,6 @@ class Decimal extends BaseSimple
             (float) $varValue
         );
 
-        $statement = $this->connection->query($strSql);
-
-        return $statement->fetchAll(\PDO::FETCH_COLUMN, 'id');
+        return $this->connection->executeQuery($strSql)->fetchFirstColumn();
     }
 }

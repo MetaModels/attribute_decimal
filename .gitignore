@@ -9,6 +9,7 @@ Thumbs.db
 .build/
 .external*/
 .idea/
+.phpcq/
 nbproject/
 
 # composer related
@@ -18,3 +19,4 @@ vendor/
 build/
 composer.lock
 .phpunit.result.cache
+.phpcq/
