@@ -32,7 +32,6 @@ use function array_map;
 use function array_merge;
 use function is_numeric;
 use function sprintf;
-use function strpos;
 
 /**
  * This is the MetaModelAttribute class for handling decimal fields.
